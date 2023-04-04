@@ -4,7 +4,7 @@ on:
     branches:
       - main
 jobs:
-  cerate_tag:
+  create_tag:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
