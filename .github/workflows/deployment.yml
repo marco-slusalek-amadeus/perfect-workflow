@@ -1,7 +1,7 @@
 name: Node.js CI
 on:
   push:
-    branches: [ main, staging ]
+    branches: main
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
@@ -17,21 +17,29 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     #- run: npm test -- --watch=false --browsers=ChromeHeadless
+  
   release:
-    needs: build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js 18
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18
-        cache: 'npm'
-    - run: npm ci
-    - run: npx semantic-release
-    - name: Changelog
-      uses: scottbrenner/generate-changelog-action@master
-      id: Changelog
-      with:
-        from-tag: v1.0
-        to-tag: HEAD
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+    #needs: build
+    #runs-on: ubuntu-latest
+    #steps:
+    #- uses: actions/checkout@v3
+    #- name: Use Node.js 18
+    #  uses: actions/setup-node@v3
+    #  with:
+    #    node-version: 18
+    #    cache: 'npm'
+    #- run: npm ci
+    #- run: npx semantic-release
+    #- name: Changelog
+    #  uses: scottbrenner/generate-changelog-action@master
+    #  id: Changelog
+    #  with:
+    #    from-tag: v1.0
+    #    to-tag: HEAD
