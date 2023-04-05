@@ -1,11 +1,28 @@
-branches:
-  - main
-  - name: staging
-    prerelease: true
-debug: true
-ci: true
-dryRun: false
-plugins:
-  - "@semantic-release/commit-analyzer"
-  - "@semantic-release/release-notes-generator"
-  - "@semantic-release/github"
+{
+  "branches": [
+    "main",
+    {
+      "name": "staging",
+      "prerelease": true
+    }
+  ],
+  "debug": true,
+  "ci": true,
+  "dryRun": false,
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/changelog",
+      {
+        "changelogFile": "docs/CHANGELOG.md"
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": ["docs/CHANGELOG.md"]
+      }
+    ]
+  ]
+}
