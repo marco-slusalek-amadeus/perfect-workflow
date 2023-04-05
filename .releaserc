@@ -22,9 +22,14 @@
       "@semantic-release/github",
       {
         "assets": [
-          "docs/CHANGELOG.md",
-          "dist/"
+          "docs/CHANGELOG.md"
         ]
+      }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "verifyReleaseCmd": "echo ${nextRelease.version} > .VERSION"
       }
     ]
   ]

@@ -2,24 +2,29 @@ name: Node.js CI
 on:
   push:
     branches: [ main, staging ]
-  pull_request:
-    branches: [ main, staging ]
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x]
     steps:
     - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Use Node.js 18
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 18
         cache: 'npm'
     - run: npm ci
     - run: npm run build --if-present
     #- run: npm test -- --watch=false --browsers=ChromeHeadless
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js 18
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'npm'
     - run: npx semantic-release
