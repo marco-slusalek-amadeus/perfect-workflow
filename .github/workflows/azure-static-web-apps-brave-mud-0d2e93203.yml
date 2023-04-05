@@ -30,7 +30,23 @@ jobs:
           app_location: "/" # App source code path
           api_location: "" # Api source code path - optional
           output_location: "dist" # Built app content directory - optional
+          skip_app_build: true
           ###### End of Repository/Build Configurations ######
+
+  lighthouse:
+    needs: build_and_deploy_job
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo https://brave-mud-0d2e93203-${{github.event.pull_request.number}}.westeurope.2.azurestaticapps.net
+      - uses: actions/checkout@v3
+      - name: Audit URLs using Lighthouse
+        uses: treosh/lighthouse-ci-action@v9
+        with:
+          urls: |
+            https://brave-mud-0d2e93203-${{github.event.pull_request.number}}.westeurope.2.azurestaticapps.net
+          budgetPath: ./pbudget.json # test performance budgets
+          uploadArtifacts: true # save results as an action artifacts
+          temporaryPublicStorage: true # upload lighthouse report to the temporary storage
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -43,3 +59,5 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_BRAVE_MUD_0D2E93203 }}
           action: "close"
+
+  
