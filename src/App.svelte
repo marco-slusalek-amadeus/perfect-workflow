@@ -15,7 +15,7 @@
   </div>
   <h1>Vite + Svelte</h1>
 
-  <h1>New Headline for Testing</h1>
+  <h1>New Headline</h1>
   <div class="card">
     <Counter />
   </div>
