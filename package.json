@@ -9,8 +9,6 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/exec": "^6.0.3",
     "@sveltejs/vite-plugin-svelte": "2.0.4",
     "semantic-release": "21.0.1",
     "svelte": "3.58.0",
