@@ -16,8 +16,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         WITH_V: true
-      outputs:
-        new_tag: ${{ steps.tag_version.outputs.new_tag }}
+    outputs:
+      new_tag: ${{ steps.tag_version.outputs.new_tag }}
   release:
     needs: create_tag
     runs-on: ubuntu-latest
