@@ -43,3 +43,66 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_BRAVE_MUD_0D2E93203 }}
           action: "close"
+
+  lighthouse_report_job:
+    name: Lighthouse report
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Static Web App - get preview URL
+        id: static_web_app_preview_url
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            CUSTOM_DOMAIN='brave-mud-0d2e93203.2.azurestaticapps.net'
+            LOCATION='westeu'
+
+            PREVIEW_URL="https://${CUSTOM_DOMAIN/.[1-9]./-${{github.event.pull_request.number }}.$LOCATION.1.}"
+
+            echo "::set-output name=PREVIEW_URL::$PREVIEW_URL"
+
+      - name: Static Web App - wait for preview
+        id: static_web_app_wait_for_preview
+        uses: nev7n/wait_for_response@v1
+        with:
+          url: '${{ steps.static_web_app_preview_url.outputs.PREVIEW_URL }}'
+          responseCode: 200
+          timeout: 600000
+          interval: 1000
+
+      - name: Audit URLs using Lighthouse
+        id: lighthouse_audit
+        uses: treosh/lighthouse-ci-action@v8
+        with:
+          urls: |
+            ${{ steps.static_web_app_preview_url.outputs.PREVIEW_URL }}
+          configPath: ./.github/workflows/lighthousesrc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+          runs: 5
+
+      - name: Format lighthouse score
+        id: format_lighthouse_score
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const lighthouseCommentMaker = require('./.github/workflows/lighthouseCommentMaker.js');
+
+            const lighthouseOutputs = {
+              manifest: ${{ steps.lighthouse_audit.outputs.manifest }},
+              links: ${{ steps.lighthouse_audit.outputs.links }}
+            };
+
+            const comment = lighthouseCommentMaker({ lighthouseOutputs });
+            core.setOutput("comment", comment);
+
+      - name: Add Lighthouse stats as comment
+        id: comment_to_pr
+        uses: marocchino/sticky-pull-request-comment@v2.0.0
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ github.event.pull_request.number }}
+          header: lighthouse
+          message: ${{ steps.format_lighthouse_score.outputs.comment }}
