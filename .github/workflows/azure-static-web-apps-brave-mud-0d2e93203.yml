@@ -57,7 +57,7 @@ jobs:
         with:
           inlineScript: |
             CUSTOM_DOMAIN='brave-mud-0d2e93203.2.azurestaticapps.net'
-            LOCATION='westeu'
+            LOCATION='westeurope'
 
             PREVIEW_URL="https://${CUSTOM_DOMAIN/.[1-9]./-${{github.event.pull_request.number }}.$LOCATION.1.}"
 
