@@ -51,7 +51,6 @@ jobs:
         uses: treosh/lighthouse-ci-action@v9
         id: lighthouse
         with:
-          runs: 5
           urls: |
             ${{needs.build_and_deploy_job.outputs.preview_url}}
           budgetPath: .github/lighthouse/budget.json # test performance budgets
@@ -66,6 +65,7 @@ jobs:
           SEO_SCORE: ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.seo }}
           PWA_SCORE: ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.pwa }}
         run: |
+          echo | awk '{print $PERF_SCORE*100 }' 
           perf_score=$(echo | awk '{print $PERF_SCORE*100 }')
           access_score=$(echo | awk '{print $ACCESS_SCORE*100 }')
           bestprac_score=$(echo | awk '{print $BESTPRAC_SCORE*100 }')
