@@ -52,7 +52,7 @@ jobs:
         with:
           urls: |
             ${{needs.build_and_deploy_job.outputs.preview_url}}
-          budgetPath: .github/lighthouse/budget.json # test performance budgets
+          budgetPath: .github/workflows/lighthouse/budget.json # test performance budgets
           uploadArtifacts: true # save results as an action artifacts
           temporaryPublicStorage: true # upload lighthouse report to the temporary storage
 
@@ -73,7 +73,6 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
-      - name: Create new Release
       - run: npm ci
       - run: npx semantic-release
 
