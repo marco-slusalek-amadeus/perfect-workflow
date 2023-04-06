@@ -55,6 +55,11 @@ jobs:
           budgetPath: .github/workflows/lighthouse/budget.json # test performance budgets
           uploadArtifacts: true # save results as an action artifacts
           temporaryPublicStorage: true # upload lighthouse report to the temporary storage
+      - name: Report Lighthouse
+        uses: manrueda/lighthouse-report-action@v1.0.1
+        with:
+          reports: '.lighthouseci'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
