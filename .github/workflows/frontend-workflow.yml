@@ -59,13 +59,12 @@ jobs:
           temporaryPublicStorage: true # upload lighthouse report to the temporary storage
       - name: Job successful feedback
         if: ${{ success() }}
-        env:
-          performance_score: ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.performance }} * 100
-          accessibility_score: ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.accessibility }} * 100
-          best_practices_score: ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.best-practices }} * 100
-          seo_score: ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.seo }} * 100
-          pwa_score: ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.pwa }} * 100
         run: |
+          echo ::set-env name=LH_PERFORMANCE_SCORE::$((${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.performance }} * 100))
+          echo ::set-env name=LH_ACCESSIBILITY_SCORE::$((${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.accessibility }} * 100))
+          echo ::set-env name=LH_BEST_PRACTICE_SCORE::$((${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.best-practices }} * 100))
+          echo ::set-env name=LH_BEST_PRACTICE_SCORE::$((${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.seo }} * 100))
+          echo ::set-env name=LH_BEST_PRACTICE_SCORE::$((${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.pwa }} * 10))
           echo '### Successfully published to Deploy Now :white_check_mark:' >> $GITHUB_STEP_SUMMARY
           echo "Changes went live under: ${{needs.build_and_deploy_job.outputs.preview_url}}" >> $GITHUB_STEP_SUMMARY
           echo "Triggered by **${{ github.actor	}}** ∙ deployed from **${{ github.ref_name	}}**" >> $GITHUB_STEP_SUMMARY
