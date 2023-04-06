@@ -58,20 +58,12 @@ jobs:
           temporaryPublicStorage: true # upload lighthouse report to the temporary storage
       - name: Job successful feedback
         if: ${{ success() }}
-        env:
-          PERF_SCORE: ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.performance }}
-          ACCESS_SCORE: ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.accessibility }}
-          BESTPRAC_SCORE: ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.best-practices }}
-          SEO_SCORE: ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.seo }}
-          PWA_SCORE: ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.pwa }}
         run: |
-          echo ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.performance }}
           perf_score=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.performance }}*100 }')
-          echo $perf_score
-          access_score=$(echo | awk '{print $ACCESS_SCORE*100 }')
-          bestprac_score=$(echo | awk '{print $BESTPRAC_SCORE*100 }')
-          seo_score=$(echo | awk '{print $SEO_SCORE*100 }')
-          pwa_score=$(echo | awk '{print $PWA_SCORE*100 }')
+          access_score=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.accessibility }}*100 }')
+          bestprac_score=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.best-practices }}*100 }')
+          seo_score=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.seo }}*100 }')
+          pwa_score=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.pwa }}*100 }')
           echo '### Successfully published to Deploy Now :white_check_mark:' >> $GITHUB_STEP_SUMMARY
           echo "Changes went live under: ${{needs.build_and_deploy_job.outputs.preview_url}}" >> $GITHUB_STEP_SUMMARY
           echo "Triggered by **${{ github.actor	}}** ∙ deployed from **${{ github.ref_name	}}**" >> $GITHUB_STEP_SUMMARY
