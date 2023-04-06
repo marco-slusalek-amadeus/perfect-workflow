@@ -18,11 +18,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: true
-      - name: Use Node.js 18
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: 'npm'
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -54,12 +49,44 @@ jobs:
           cache: 'npm'
       - name: Audit URLs using Lighthouse
         uses: treosh/lighthouse-ci-action@v9
+        id: lighthouse
         with:
+          runs: 5
           urls: |
             ${{needs.build_and_deploy_job.outputs.preview_url}}
-          budgetPath: ./pbudget.json # test performance budgets
+          budgetPath: .github/lighthouse/budget.json # test performance budgets
           uploadArtifacts: true # save results as an action artifacts
           temporaryPublicStorage: true # upload lighthouse report to the temporary storage
+      - name: Job successful feedback
+        if: ${{ success() }}
+        run: |
+          echo '### Successfully published to Deploy Now :white_check_mark:' >> $GITHUB_STEP_SUMMARY
+          echo "Changes went live under: ${{needs.build_and_deploy_job.outputs.preview_url}}" >> $GITHUB_STEP_SUMMARY
+          echo "Triggered by **${{ github.actor	}}** ∙ deployed from **${{ github.ref_name	}}**" >> $GITHUB_STEP_SUMMARY
+          echo ' ' >> $GITHUB_STEP_SUMMARY
+          echo "**Lighthouse results:**" >> $GITHUB_STEP_SUMMARY
+          echo "Performance: ${${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.performance }} * 100}" >> $GITHUB_STEP_SUMMARY
+          echo "Accessibility: ${${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.accessibility }} * 100 }" >> $GITHUB_STEP_SUMMARY
+          echo "Best-practices: ${${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.best-practices }} * 100 }" >> $GITHUB_STEP_SUMMARY
+          echo "SEO: ${${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.seo }} * 100 }" >> $GITHUB_STEP_SUMMARY
+          echo "PWA: ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.pwa }}" >> $GITHUB_STEP_SUMMARY
+      - name: Job failed feedback
+        if: ${{ failure() }}
+        run: |
+          echo '### Publishing to Deploy Now was not successful :cross:' >> $GITHUB_STEP_SUMMARY
+          echo "Unfortunately, the deployment failed." >> $GITHUB_STEP_SUMMARY$GITHUB_STEP_SUMMARY
+
+  co2_footprint:
+    needs: build_and_deploy_job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Calculate CO2 🌱
+        uses: GeopJr/CO2@v1
+        with:
+          url: ${{needs.build_and_deploy_job.outputs.preview_url}}
+          renewable: true
+          nerds: false
+          footer: false
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
