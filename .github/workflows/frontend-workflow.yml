@@ -66,11 +66,11 @@ jobs:
           SEO_SCORE: ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.seo }}
           PWA_SCORE: ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.pwa }}
         run: |
-          perf_score=$(echo | awk '{print $PERF_SCORE * 100 }')
-          access_score=$(echo | awk '{print $ACCESS_SCORE * 100 }')
-          bestprac_score=$(echo | awk '{print $BESTPRAC_SCORE * 100 }')
-          seo_score=$(echo | awk '{print $SEO_SCORE * 100 }')
-          pwa_score=$(echo | awk '{print $PWA_SCORE * 100 }')
+          perf_score=$(echo | awk '{print $PERF_SCORE*100 }')
+          access_score=$(echo | awk '{print $ACCESS_SCORE*100 }')
+          bestprac_score=$(echo | awk '{print $BESTPRAC_SCORE*100 }')
+          seo_score=$(echo | awk '{print $SEO_SCORE*100 }')
+          pwa_score=$(echo | awk '{print $PWA_SCORE*100 }')
           echo '### Successfully published to Deploy Now :white_check_mark:' >> $GITHUB_STEP_SUMMARY
           echo "Changes went live under: ${{needs.build_and_deploy_job.outputs.preview_url}}" >> $GITHUB_STEP_SUMMARY
           echo "Triggered by **${{ github.actor	}}** ∙ deployed from **${{ github.ref_name	}}**" >> $GITHUB_STEP_SUMMARY
