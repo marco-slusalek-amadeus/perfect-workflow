@@ -65,8 +65,9 @@ jobs:
           SEO_SCORE: ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.seo }}
           PWA_SCORE: ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.pwa }}
         run: |
-          echo | awk '{print $PERF_SCORE}' 
-          perf_score=$(echo | awk '{print $PERF_SCORE*100 }')
+          echo ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.performance }}
+          perf_score=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.performance }}*100 }')
+          echo $perf_score
           access_score=$(echo | awk '{print $ACCESS_SCORE*100 }')
           bestprac_score=$(echo | awk '{print $BESTPRAC_SCORE*100 }')
           seo_score=$(echo | awk '{print $SEO_SCORE*100 }')
