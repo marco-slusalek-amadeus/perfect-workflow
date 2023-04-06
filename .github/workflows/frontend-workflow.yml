@@ -45,7 +45,7 @@ jobs:
         uses: treosh/lighthouse-ci-action@v9
         with:
           urls: |
-            ${{needs.build_and_deploy_job.outputs.static_web_app_app}}
+            ${{needs.build_and_deploy_job.outputs.preview_url}}
           budgetPath: ./pbudget.json # test performance budgets
           uploadArtifacts: true # save results as an action artifacts
           temporaryPublicStorage: true # upload lighthouse report to the temporary storage
