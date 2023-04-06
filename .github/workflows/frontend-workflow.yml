@@ -80,7 +80,7 @@ jobs:
           echo '### Publishing to Deploy Now was not successful :cross:' >> $GITHUB_STEP_SUMMARY
           echo "Unfortunately, the deployment failed." >> $GITHUB_STEP_SUMMARY$GITHUB_STEP_SUMMARY
       - name: Links
-        run: echo ${{steps.lighthouse.outputs.links}}
+        run: echo ${{steps.lighthouse.outputs.links[0]}}
     outputs:
       links: ${{steps.lighthouse.outputs.links}}
 
