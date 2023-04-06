@@ -32,7 +32,7 @@ jobs:
           output_location: "dist" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
     outputs:
-      preview_url: ${{builddeploy.outputs.static_web_app_url}}
+      preview_url: ${{steps.builddeploy.outputs.static_web_app_url}}
 
   lighthouse:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
