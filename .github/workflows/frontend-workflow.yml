@@ -82,8 +82,7 @@ jobs:
       - name: Links
         run: |
           echo ${{steps.lighthouse.outputs.links}}
-          echo ${{steps.lighthouse.outputs.links[0]}}
-          echo $LINKS
+          echo '$LINKS[0]'
         env:
           LINKS: ${{steps.lighthouse.outputs.links}}
     outputs:
