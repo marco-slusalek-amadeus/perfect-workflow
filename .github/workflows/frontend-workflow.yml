@@ -85,6 +85,21 @@ jobs:
           echo '### Publishing to Deploy Now was not successful :cross:' >> $GITHUB_STEP_SUMMARY
           echo "Unfortunately, the deployment failed." >> $GITHUB_STEP_SUMMARY
 
+  metrics_lighthouse:
+    needs: build_and_deploy_job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Detailed report
+        uses: lowlighter/metrics@latest
+        with:
+          filename: metrics.plugin.pagespeed.detailed.svg
+          token: NOT_NEEDED
+          base: ""
+          plugin_pagespeed: yes
+          plugin_pagespeed_detailed: yes
+          plugin_pagespeed_token: AIzaSyBpaDO4DagOXeK7yx_vCx0coSSuCf7ceqg
+          plugin_pagespeed_url: https://workflow-github.travelscript.eu/
+
   co2_footprint:
     needs: build_and_deploy_job
     runs-on: ubuntu-latest
