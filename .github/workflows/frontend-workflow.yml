@@ -64,7 +64,8 @@ jobs:
           bestprac_score=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.best-practices }}*100 }')
           seo_score=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.seo }}*100 }')
           pwa_score=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.pwa }}*100 }')
-          echo '### Successfully published to Deploy Now :white_check_mark:' >> $GITHUB_STEP_SUMMARY
+          report_link=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.links["https://workflow-github.travelscript.eu/"]}}
+          echo '### Successfully published :white_check_mark:' >> $GITHUB_STEP_SUMMARY
           echo "Changes went live under: ${{needs.build_and_deploy_job.outputs.preview_url}}" >> $GITHUB_STEP_SUMMARY
           echo "Triggered by **${{ github.actor	}}** ∙ deployed from **${{ github.ref_name	}}**" >> $GITHUB_STEP_SUMMARY
           echo ' ' >> $GITHUB_STEP_SUMMARY
@@ -74,20 +75,12 @@ jobs:
           echo "Best-practices: $bestprac_score" >> $GITHUB_STEP_SUMMARY
           echo "SEO: $seo_score" >> $GITHUB_STEP_SUMMARY
           echo "PWA: $pwa_score % ready" >> $GITHUB_STEP_SUMMARY
+          echo "You can get the full report online here $report_link" >> $GITHUB_STEP_SUMMARY
       - name: Job failed feedback
         if: ${{ failure() }}
         run: |
           echo '### Publishing to Deploy Now was not successful :cross:' >> $GITHUB_STEP_SUMMARY
           echo "Unfortunately, the deployment failed." >> $GITHUB_STEP_SUMMARY
-      - name: Links
-        env:
-          LINKS: ${{steps.lighthouse.outputs.links}}
-        run: |
-          echo "$LINKS" | jq '.["https://workflow-github.travelscript.eu/"]'
-          report_link=$(echo "$LINKS" | jq '.["https://workflow-github.travelscript.eu/"]')
-          echo "You can get the full report online here $report_link" >> $GITHUB_STEP_SUMMARY
-    outputs:
-      links: ${{steps.lighthouse.outputs.links}}
 
   co2_footprint:
     needs: build_and_deploy_job
