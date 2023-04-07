@@ -83,7 +83,7 @@ jobs:
         env:
           LINKS: ${{steps.lighthouse.outputs.links}}
         run: |
-          echo "$LINKS" | jq '.[0]'
+          echo "$LINKS" | jq '.["https://workflow-github.travelscript.eu/"]'
     outputs:
       links: ${{steps.lighthouse.outputs.links}}
 
