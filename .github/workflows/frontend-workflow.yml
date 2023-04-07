@@ -58,13 +58,15 @@ jobs:
           temporaryPublicStorage: true # upload lighthouse report to the temporary storage
       - name: Job successful feedback
         if: ${{ success() }}
+        env:
+          LINKS: ${{steps.lighthouse.outputs.links}}
         run: |
           perf_score=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.performance }}*100 }')
           access_score=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.accessibility }}*100 }')
           bestprac_score=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.best-practices }}*100 }')
           seo_score=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.seo }}*100 }')
           pwa_score=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.pwa }}*100 }')
-          report_link=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.links)[0]}} }')
+          report_link=$(echo "$LINKS" | jq '.["https://workflow-github.travelscript.eu/"]')
           echo '### Successfully published :white_check_mark:' >> $GITHUB_STEP_SUMMARY
           echo "Changes went live under: ${{needs.build_and_deploy_job.outputs.preview_url}}" >> $GITHUB_STEP_SUMMARY
           echo "Triggered by **${{ github.actor	}}** ∙ deployed from **${{ github.ref_name	}}**" >> $GITHUB_STEP_SUMMARY
@@ -75,6 +77,7 @@ jobs:
           echo "Best-practices: $bestprac_score" >> $GITHUB_STEP_SUMMARY
           echo "SEO: $seo_score" >> $GITHUB_STEP_SUMMARY
           echo "PWA: $pwa_score % ready" >> $GITHUB_STEP_SUMMARY
+          echo ' ' >> $GITHUB_STEP_SUMMARY
           echo "You can get the full report online here $report_link" >> $GITHUB_STEP_SUMMARY
       - name: Job failed feedback
         if: ${{ failure() }}
