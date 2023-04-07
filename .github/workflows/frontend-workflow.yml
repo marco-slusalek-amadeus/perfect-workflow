@@ -84,7 +84,7 @@ jobs:
           LINKS: ${{steps.lighthouse.outputs.links}}
         run: |
           echo "$LINKS" | jq '.["https://workflow-github.travelscript.eu/"]'
-          report_link = $(echo "$LINKS" | jq '.["https://workflow-github.travelscript.eu/"]')
+          report_link=$(echo "$LINKS" | jq '.["https://workflow-github.travelscript.eu/"]')
           echo "You can get the full report online here $report_link" >> $GITHUB_STEP_SUMMARY$GITHUB_STEP_SUMMARY
     outputs:
       links: ${{steps.lighthouse.outputs.links}}
