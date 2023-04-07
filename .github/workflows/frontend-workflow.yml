@@ -81,8 +81,11 @@ jobs:
           echo "Unfortunately, the deployment failed." >> $GITHUB_STEP_SUMMARY$GITHUB_STEP_SUMMARY
       - name: Links
         run: |
-          echo | jq -cs '.[0]' ${{steps.lighthouse.outputs.links}}
           echo ${{steps.lighthouse.outputs.links}}
+          echo ${{steps.lighthouse.outputs.links[0]}}
+          echo $LINKS
+        env:
+          LINKS: ${{steps.lighthouse.outputs.links}}
     outputs:
       links: ${{steps.lighthouse.outputs.links}}
 
