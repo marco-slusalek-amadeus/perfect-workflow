@@ -64,7 +64,7 @@ jobs:
           bestprac_score=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.best-practices }}*100 }')
           seo_score=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.seo }}*100 }')
           pwa_score=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.pwa }}*100 }')
-          report_link=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.links["https://workflow-github.travelscript.eu/"]}}
+          report_link=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.links)[0]}}
           echo '### Successfully published :white_check_mark:' >> $GITHUB_STEP_SUMMARY
           echo "Changes went live under: ${{needs.build_and_deploy_job.outputs.preview_url}}" >> $GITHUB_STEP_SUMMARY
           echo "Triggered by **${{ github.actor	}}** ∙ deployed from **${{ github.ref_name	}}**" >> $GITHUB_STEP_SUMMARY
