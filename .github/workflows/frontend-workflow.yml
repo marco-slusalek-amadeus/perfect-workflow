@@ -114,6 +114,7 @@ jobs:
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
+            Test Lighthouse report
             ${{needs.lighthouse.outputs.lh_report}}
 
   close_pull_request_job:
