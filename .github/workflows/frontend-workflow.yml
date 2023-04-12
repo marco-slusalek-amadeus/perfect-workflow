@@ -58,6 +58,7 @@ jobs:
           temporaryPublicStorage: true # upload lighthouse report to the temporary storage
       - name: Job successful feedback
         if: ${{ success() }}
+        id: lighthousereport
         env:
           LINKS: ${{steps.lighthouse.outputs.links}}
         run: |
@@ -79,26 +80,15 @@ jobs:
           echo "PWA: $pwa_score % ready" >> $GITHUB_STEP_SUMMARY
           echo ' ' >> $GITHUB_STEP_SUMMARY
           echo "You can get the full report online here $report_link" >> $GITHUB_STEP_SUMMARY
+          lh_report=$GITHUB_STEP_SUMMARY
+          echo $lh_report
       - name: Job failed feedback
         if: ${{ failure() }}
         run: |
           echo '### Publishing to Deploy Now was not successful :cross:' >> $GITHUB_STEP_SUMMARY
           echo "Unfortunately, the deployment failed." >> $GITHUB_STEP_SUMMARY
-
-  metrics_lighthouse:
-    needs: build_and_deploy_job
-    runs-on: ubuntu-latest
-    steps:
-      - name: Detailed report
-        uses: lowlighter/metrics@latest
-        with:
-          filename: metrics.plugin.pagespeed.detailed.svg
-          token: NOT_NEEDED
-          base: ""
-          plugin_pagespeed: yes
-          plugin_pagespeed_detailed: yes
-          plugin_pagespeed_token: AIzaSyBpaDO4DagOXeK7yx_vCx0coSSuCf7ceqg
-          plugin_pagespeed_url: https://workflow-github.travelscript.eu/
+    outputs:
+      lh_report: ${{steps.lighthousereport.outputs.lh_report}}
 
   co2_footprint:
     needs: build_and_deploy_job
@@ -111,6 +101,20 @@ jobs:
           renewable: true
           nerds: false
           footer: false
+
+  example_comment_pr:
+    needs: lighthouse
+    runs-on: ubuntu-latest
+    name: An example job to comment a PR
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            ${{needs.lighthouse.outputs.lh_report}}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
