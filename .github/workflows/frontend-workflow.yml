@@ -83,6 +83,7 @@ jobs:
           lh_report=$(echo 'TEST')
           echo "$lh_report"
           echo $GITHUB_STEP_SUMMARY >> $lh_report
+          echo "$lh_report"
       - name: Job failed feedback
         if: ${{ failure() }}
         run: |
@@ -117,6 +118,7 @@ jobs:
           message: |
             Test Lighthouse report
             ${{needs.lighthouse.outputs.lh_report}}
+        run: echo "${{needs.lighthouse.outputs.lh_report}}"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
