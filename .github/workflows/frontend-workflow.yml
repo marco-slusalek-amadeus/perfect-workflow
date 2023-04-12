@@ -68,6 +68,7 @@ jobs:
           seo_score=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.seo }}*100 }')
           pwa_score=$(echo | awk '{print ${{ fromJSON(steps.lighthouse.outputs.manifest)[0].summary.pwa }}*100 }')
           report_link=$(echo "$LINKS" | jq '.["https://workflow-github.travelscript.eu/"]')
+          echo "${{steps.lighthouse.outputs.links}}""
           echo '### Successfully published :white_check_mark:' >> $GITHUB_STEP_SUMMARY
           echo "Changes went live under: ${{needs.build_and_deploy_job.outputs.preview_url}}" >> $GITHUB_STEP_SUMMARY
           echo "Triggered by **${{ github.actor	}}** ∙ deployed from **${{ github.ref_name	}}**" >> $GITHUB_STEP_SUMMARY
@@ -81,7 +82,7 @@ jobs:
           echo ' ' >> $GITHUB_STEP_SUMMARY
           echo "You can get the full report online here $report_link" >> $GITHUB_STEP_SUMMARY
           lh_report=$GITHUB_STEP_SUMMARY
-          echo $lh_report
+          echo "$lh_report"
       - name: Job failed feedback
         if: ${{ failure() }}
         run: |
