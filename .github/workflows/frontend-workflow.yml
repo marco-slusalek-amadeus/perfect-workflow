@@ -80,7 +80,7 @@ jobs:
           echo "PWA: $pwa_score % ready" >> $GITHUB_STEP_SUMMARY
           echo ' ' >> $GITHUB_STEP_SUMMARY
           echo "You can get the full report online here $report_link" >> $GITHUB_STEP_SUMMARY
-          lh_report=$GITHUB_STEP_SUMMARY
+          lh_report=$(echo $GITHUB_STEP_SUMMARY)
           echo "$lh_report"
       - name: Job failed feedback
         if: ${{ failure() }}
